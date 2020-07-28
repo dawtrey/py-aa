@@ -1,4 +1,5 @@
 from alpha_vantage.foreignexchange import ForeignExchange 
+import time
 import pandas as pd
 
 akey = 'W0T38Z08CGRKF3MA'
@@ -35,24 +36,25 @@ def get_intraday(akey, cfrom, cto):
 
 
 def decision(akey, cfrom, cto, new):
+    global hold, tsa
     avg = sum(tsa) / len(tsa)
-    if new > avg:
+    if new < avg:
         return 1 
     else: 
         return 0
 
 def minute(akey, cfrom, cto):
-    global hold, tsa
-    new = get_price(akey, cfrom, cto)
+    global hold, tsa, mult
+    new = float(get_price(akey, cfrom, cto))
     if hold == 1:
         mult = mult * new / tsa[-1]
     hold = decision(akey, cfrom, cto, new)
     tsa.append(new)
     print('Relative wealth at this time: ', mult,'\n Current price: ', new, sep='')
-    wait(60)
+    time.sleep(60)
 
 def trade(akey, cfrom, cto):
-    global hold, tsa
+    global hold, tsa, mult
     hold = 0
     tsa = [i for i in get_intraday(akey, cfrom, cto)]
     mult = 1
@@ -61,6 +63,6 @@ def trade(akey, cfrom, cto):
     for i in range(15):
         minute(akey, cfrom, cto)
     multif = mult * 1000
-    print('Final relative wealth: {mult}. That means if you had $1000, you would now have {multif}')
+    print(f'Final relative wealth: {mult}. That means if you had $1000, you would now have {multif}')
 
 trade(akey, cfrom, cto)
