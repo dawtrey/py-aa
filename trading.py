@@ -32,7 +32,7 @@ def get_intraday(akey, cfrom, cto):
 
 #ts = get_intraday(akey, cfrom, cto)
 #print(ts)
-#establishing a variable sucht that we know whether to hold a position
+#establishing a variable such that we know whether to hold a position
 
 
 def decision(akey, cfrom, cto, new):
